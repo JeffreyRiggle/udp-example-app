@@ -24,7 +24,7 @@ server.on('message', (message, info) => {
         };
     }
 
-    server.send(JSON.stringify(res), info.port);
+    server.send(Buffer.from(JSON.stringify(res)), info.port, info.address);
 });
 
 server.on('listening', () => {

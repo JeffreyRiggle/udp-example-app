@@ -1,24 +1,32 @@
 const { app, BrowserWindow } = require('electron')
-const { start, registerEvent } = require('@jeffriggle/ipc-bridge-server')
+const { start, registerEvent, broadcast } = require('@jeffriggle/ipc-bridge-server')
 const { createSocket } = require('dgram')
 
 function setupUDPListener() {
     const client = createSocket('udp4')
 
     client.on('message', (message, info) => {
-        console.log(`Got Message ${message} from ${info.address}:${info.port}`);
-    });
+        console.log(`Got Message ${message} from ${info.address}:${info.port}`)
+        broadcast('newMessage', JSON.parse(message.toString()))
+    })
 
-    registerEvent('sendChatMessage', (message) => {
-        console.log(`Got Message ${JSON.stringify(message)}`);
-        client.send(Buffer.from(message), 4000, 'localhost', err => {
+    registerEvent('sendChatMessage', (event, message) => {
+        client.send(Buffer.from(JSON.stringify({ type: 2, message })), 4000, 'localhost', err => {
             if (err) {
-                console.log(`Failed to send message ${err}`);
+                console.log(`Failed to send message ${err}`)
             } else {
-                console.log('Message sent');
+                console.log('Message sent')
             }
-        });
-    });
+        })
+    })
+
+    registerEvent('newMessage', (event, message) => {
+        client.send(Buffer.from(JSON.stringify({ type: 1 })), 4000, 'localhost', err => {
+            if (err) {
+                console.log(`Failed to get messages ${err}`);
+            }
+        })
+    })
 
     start()
 }
@@ -32,7 +40,6 @@ function createWindow () {
 
   win.loadFile('build/index.html')
   setupUDPListener()
-  win.webContents.openDevTools()
 }
 
 app.whenReady().then(createWindow)

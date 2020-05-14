@@ -1,10 +1,17 @@
 const chatHistory = [];
 
 const addChatMessage = (message) => {
-    chatHistory.push({
+    const newItem = {
         time: Date.now(),
         message
-    });
+    };
+
+    chatHistory.push(newItem);
+
+    return {
+        items: [newItem],
+        segment: chatHistory.length
+    }
 }
 
 const getChatMessages = (index) => {
