@@ -9,9 +9,29 @@ server.on('error', (error) => {
     process.exit(1);
 });
 
-server.on('message', (message, info) => {
-    const req = JSON.parse(message.toString());
+function convertRequest(message) {
+    const type = message.readInt8();
 
+    if (type === 1) {
+        return {
+            type
+        }
+    }
+
+    if (type === 2) {
+        return {
+            type,
+            message: message.toString('utf8', 1)
+        }
+    }
+
+    return {
+        type: -1
+    }
+}
+
+server.on('message', (message, info) => {
+    const req = convertRequest(message);
     let res;
 
     if (req.type === 1) {

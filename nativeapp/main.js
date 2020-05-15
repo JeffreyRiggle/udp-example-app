@@ -11,7 +11,11 @@ function setupUDPListener() {
     })
 
     registerEvent('sendChatMessage', (event, message) => {
-        client.send(Buffer.from(JSON.stringify({ type: 2, message })), 4000, 'localhost', err => {
+        const req = Buffer.alloc(message.length + 1);
+        req.writeInt8(2, 0);
+        req.write(message, 1);
+
+        client.send(req, 4000, 'localhost', err => {
             if (err) {
                 console.log(`Failed to send message ${err}`)
             } else {
@@ -21,7 +25,10 @@ function setupUDPListener() {
     })
 
     registerEvent('newMessage', (event, message) => {
-        client.send(Buffer.from(JSON.stringify({ type: 1 })), 4000, 'localhost', err => {
+        const req = new Buffer(1);
+        req.writeInt8(1);
+
+        client.send(req, 4000, 'localhost', err => {
             if (err) {
                 console.log(`Failed to get messages ${err}`);
             }
