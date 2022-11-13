@@ -14,7 +14,7 @@
     "electron": "^8.2.5",
     "html-webpack-plugin": "^4.3.0",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "dependencies": {
     "@jeffriggle/ipc-bridge-client": "^1.0.8",
