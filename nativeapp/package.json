@@ -18,6 +18,6 @@
   },
   "dependencies": {
     "@jeffriggle/ipc-bridge-client": "^1.0.8",
-    "@jeffriggle/ipc-bridge-server": "^1.0.5"
+    "@jeffriggle/ipc-bridge-server": "^1.0.6"
   }
 }
